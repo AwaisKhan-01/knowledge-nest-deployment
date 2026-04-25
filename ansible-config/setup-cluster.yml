@@ -1,0 +1,46 @@
+---
+- name: Provision EC2 Instance with Docker and MicroK8s
+  # Target the server group we defined in hosts.ini
+  hosts: k8s_node
+  # Execute all commands as 'sudo'
+  become: yes 
+
+  tasks:
+    - name: Update apt cache and upgrade system packages
+      apt:
+        update_cache: yes
+        upgrade: dist
+
+    - name: Install prerequisite system packages
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+        state: present
+
+    - name: Install Docker via apt
+      apt:
+        name: docker.io
+        state: present
+
+    - name: Install MicroK8s via snap (Classic confinement required)
+      snap:
+        name: microk8s
+        classic: yes
+
+    - name: Add the 'ubuntu' user to the Docker and MicroK8s groups
+      user:
+        name: ubuntu
+        groups: docker, microk8s
+        append: yes
+
+    - name: Enable essential MicroK8s addons (DNS and Storage)
+      command: microk8s enable dns hostpath-storage
+      # We ignore errors here just in case they are already enabled
+      ignore_errors: yes
+
+    - name: Create an alias so the 'kubectl' command works seamlessly
+      command: snap alias microk8s.kubectl kubectl
+      ignore_errors: yes
