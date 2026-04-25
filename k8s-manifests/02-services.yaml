@@ -41,7 +41,7 @@ spec:
               value: "http://course-service:5002"
 
 # ==========================================
-# 2. Synchronous Backend Services (Auth, Course, Review)
+# 2. Synchronous Backend Services (Auth, Course)
 # ==========================================
 ---
 # Auth Service
@@ -81,8 +81,24 @@ spec:
               value: "postgresql://nest_user:nest_password@postgres:5432/knowledge_nest"
             - name: RABBITMQ_URL
               value: "amqp://guest:guest@rabbitmq:5672/"
+            - name: RABBITMQ_HOST
+              value: "rabbitmq"
+            - name: RABBITMQ_PORT
+              value: "5672" # Fixed port collision
 ---
-# Course Service (Skipping the Service definition block for brevity, but it mirrors Auth)
+# Course Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: course-service
+  namespace: knowledge-nest
+spec:
+  selector:
+    app: course-service
+  ports:
+    - port: 5002
+      targetPort: 5002
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -105,6 +121,10 @@ spec:
           env:
             - name: DATABASE_URL
               value: "postgresql://nest_user:nest_password@postgres:5432/knowledge_nest"
+            - name: RABBITMQ_HOST
+              value: "rabbitmq"
+            - name: RABBITMQ_PORT
+              value: "5672" # Fixed port collision
 
 # ==========================================
 # 3. Asynchronous Worker (Notification Service)
@@ -132,6 +152,10 @@ spec:
           env:
             - name: RABBITMQ_URL
               value: "amqp://guest:guest@rabbitmq:5672/"
+            - name: RABBITMQ_HOST
+              value: "rabbitmq"
+            - name: RABBITMQ_PORT
+              value: "5672" # Fixed port collision
 
 # ==========================================
 # 4. React Frontend (User Interface)
@@ -143,13 +167,13 @@ metadata:
   name: frontend
   namespace: knowledge-nest
 spec:
-  type: NodePort # This exposes the app to the outside internet
+  type: NodePort 
   selector:
     app: frontend
   ports:
     - port: 80
-      targetPort: 3000
-      nodePort: 30080 # Users will access your app via this port
+      targetPort: 3000 # Aligned with Vite
+      nodePort: 30080 
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -171,4 +195,4 @@ spec:
           image: awaiskhan342/knowledge-nest-frontend:latest
           imagePullPolicy: Always
           ports:
-            - containerPort: 3000
+            - containerPort: 3000 # Aligned with Vite
