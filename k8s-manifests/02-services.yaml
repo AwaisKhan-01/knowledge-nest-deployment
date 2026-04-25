@@ -82,7 +82,7 @@ spec:
             - name: DATABASE_URL
               value: "postgresql://nest_user:nest_password@postgres:5432/knowledge_nest"
             - name: RABBITMQ_URL
-              value: "amqp://guest:guest@rabbitmq:5672/"
+              value: "amqp://admin:admin@rabbitmq:5672/"
             - name: RABBITMQ_HOST
               value: "rabbitmq"
             - name: RABBITMQ_PORT
@@ -153,7 +153,7 @@ spec:
           imagePullPolicy: Always
           env:
             - name: RABBITMQ_URL
-              value: "amqp://guest:guest@rabbitmq:5672/"
+              value: "amqp://admin:admin@rabbitmq:5672/"
             - name: RABBITMQ_HOST
               value: "rabbitmq"
             - name: RABBITMQ_PORT
