@@ -148,7 +148,7 @@ spec:
     app: frontend
   ports:
     - port: 80
-      targetPort: 80
+      targetPort: 3000
       nodePort: 30080 # Users will access your app via this port
 ---
 apiVersion: apps/v1
@@ -171,4 +171,4 @@ spec:
           image: awaiskhan342/knowledge-nest-frontend:latest
           imagePullPolicy: Always
           ports:
-            - containerPort: 80
+            - containerPort: 3000
