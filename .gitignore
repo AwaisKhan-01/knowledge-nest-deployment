@@ -1,0 +1,20 @@
+# Node & React
+node_modules/
+dist/
+build/
+
+# Python
+__pycache__/
+*.pyc
+venv/
+env/
+
+# Terraform (We will need this ignored for Phase 2)
+.terraform/
+terraform.tfstate
+terraform.tfstate.backup
+*.tfvars
+
+# Kubernetes & Secrets
+*.pem
+.env

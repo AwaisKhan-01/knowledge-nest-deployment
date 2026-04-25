@@ -1,0 +1,176 @@
+.courses-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.course-card {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+  position: relative;
+  border: 2px solid transparent;
+}
+
+.course-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.course-card.enrolled {
+  border-color: #27ae60;
+  background: linear-gradient(to bottom, #f8fff9 0%, white 10%);
+}
+
+.course-card.enrolled:hover {
+  box-shadow: 0 4px 12px rgba(39, 174, 96, 0.2);
+}
+
+.enrolled-badge {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: #27ae60;
+  color: white;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(39, 174, 96, 0.3);
+}
+
+.enrolled-badge span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.course-card h3 {
+  color: #2c3e50;
+  margin-bottom: 10px;
+}
+
+.course-card p {
+  color: #7f8c8d;
+  margin-bottom: 15px;
+}
+
+.content-url a {
+  color: #3498db;
+  text-decoration: none;
+}
+
+.content-url a:hover {
+  text-decoration: underline;
+}
+
+.course-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.course-actions button {
+  flex: 1;
+}
+
+/* Modal styles */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-content h2 {
+  margin-bottom: 20px;
+  color: #2c3e50;
+}
+
+.modal-content select,
+.modal-content textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+  font-family: inherit;
+}
+
+.modal-content textarea {
+  resize: vertical;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.modal-actions button {
+  flex: 1;
+}
+
+/* Reviews section */
+.reviews-section {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.reviews-section h4 {
+  color: #2c3e50;
+  margin-bottom: 15px;
+}
+
+.no-reviews {
+  color: #7f8c8d;
+  font-style: italic;
+}
+
+.review-item {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.review-rating {
+  font-size: 18px;
+}
+
+.review-date {
+  color: #7f8c8d;
+  font-size: 14px;
+}
+
+.review-comment {
+  color: #2c3e50;
+  line-height: 1.5;
+}
