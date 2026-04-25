@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request
 import logging
 from datetime import datetime
-from database import SessionLocal
+from database import SessionLocal, engine, Base
 from models.course import Course
 from models.enrollment import Enrollment
 from rabbitmq_client import rabbitmq_client
@@ -9,6 +9,10 @@ from rabbitmq_client import rabbitmq_client
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+# Initialize database tables
+logger.info("Initializing database tables for Course service...")
+Base.metadata.create_all(bind=engine)
 
 app = Flask(__name__)
 

@@ -6,13 +6,14 @@ import logging
 import atexit
 from datetime import datetime, timedelta
 from functools import wraps
-from database import SessionLocal
+from database import SessionLocal, engine, Base
 from models.user import User
 from rabbitmq_client import rabbitmq_client
 
-# Configure logging
-logging.basicConfig(level=logging.INFO)
+# Initialize database tables
 logger = logging.getLogger(__name__)
+logger.info("Initializing database tables...")
+Base.metadata.create_all(bind=engine)
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('JWT_SECRET', 'dev-secret-key-change-in-production')

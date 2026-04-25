@@ -1,8 +1,15 @@
 from flask import Flask, jsonify, request
 from datetime import datetime
-from database import SessionLocal
+from database import SessionLocal, engine, Base
 from models.review import Review
 from rabbitmq_client import rabbitmq_client
+
+import logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+logger.info("Initializing database tables for Review service...")
+Base.metadata.create_all(bind=engine)
 
 app = Flask(__name__)
 

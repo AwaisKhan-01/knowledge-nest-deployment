@@ -27,6 +27,8 @@ jobs:
           context: ./frontend-react
           push: true
           tags: awaiskhan342/knowledge-nest-frontend:latest
+          build-args: |
+            VITE_API_BASE_URL=http://34.237.140.163:30081
 
       # 2. Build & Push Gateway
       - name: Build and Push API Gateway
