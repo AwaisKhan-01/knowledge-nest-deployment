@@ -30,6 +30,7 @@ spec:
       labels:
         app: api-gateway
     spec:
+      enableServiceLinks: false
       containers:
         - name: api-gateway
           image: awaiskhan342/knowledge-nest-gateway:latest
@@ -74,6 +75,7 @@ spec:
       labels:
         app: auth-service
     spec:
+      enableServiceLinks: false
       containers:
         - name: auth-service
           image: awaiskhan342/knowledge-nest-auth:latest
@@ -85,7 +87,6 @@ spec:
               value: "amqp://admin:admin@rabbitmq:5672/"
             - name: RABBITMQ_HOST
               value: "rabbitmq"
-
 ---
 # Course Service
 apiVersion: v1
@@ -115,6 +116,7 @@ spec:
       labels:
         app: course-service
     spec:
+      enableServiceLinks: false
       containers:
         - name: course-service
           image: awaiskhan342/knowledge-nest-course:latest
@@ -144,6 +146,7 @@ spec:
       labels:
         app: notification-service
     spec:
+      enableServiceLinks: false
       containers:
         - name: notification-service
           image: awaiskhan342/knowledge-nest-notification:latest
@@ -153,7 +156,6 @@ spec:
               value: "amqp://admin:admin@rabbitmq:5672/"
             - name: RABBITMQ_HOST
               value: "rabbitmq"
-
 
 # ==========================================
 # 4. React Frontend (User Interface)
@@ -170,7 +172,7 @@ spec:
     app: frontend
   ports:
     - port: 80
-      targetPort: 3000 # Aligned with Vite
+      targetPort: 3000
       nodePort: 30080 
 ---
 apiVersion: apps/v1
@@ -188,9 +190,10 @@ spec:
       labels:
         app: frontend
     spec:
+      enableServiceLinks: false
       containers:
         - name: frontend
           image: awaiskhan342/knowledge-nest-frontend:latest
           imagePullPolicy: Always
           ports:
-            - containerPort: 3000 # Aligned with Vite
+            - containerPort: 3000
