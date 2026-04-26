@@ -24,8 +24,8 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Install only production HTTP server
-RUN npm install -g serve
+# Install serve for serving static files and curl for health checks
+RUN npm install -g serve@latest && npm cache clean --force
 
 # Copy built application from builder
 COPY --from=builder /app/dist ./dist
