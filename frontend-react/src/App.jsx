@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { Toaster } from 'react-hot-toast'
 import Home from './pages/Home'
 import Login from './pages/Login'
 import Register from './pages/Register'
@@ -8,14 +9,17 @@ import Navbar from './components/Navbar'
 function App() {
   return (
     <Router>
-      <div className="app">
+      <div className="min-h-screen flex flex-col bg-slate-50 text-slate-800 font-sans">
+        <Toaster position="top-right" toastOptions={{className: 'text-sm font-medium'}} />
         <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/courses" element={<Courses />} />
-        </Routes>
+        <main className="flex-grow">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/courses" element={<Courses />} />
+          </Routes>
+        </main>
       </div>
     </Router>
   )
