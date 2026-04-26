@@ -17,4 +17,4 @@ terraform.tfstate.backup
 
 # Kubernetes & Secrets
 *.pem
-.env
+.env.current_ip
