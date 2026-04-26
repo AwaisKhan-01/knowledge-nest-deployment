@@ -78,7 +78,7 @@ ansible-playbook -i hosts.ini setup-cluster.yml
 
 ### Phase 3: Continuous Integration (GitHub Actions)
 Our monorepo utilizes GitHub Actions to automatically build and containerize the microservices upon pushing to the `main` branch. 
-* **Dynamic Frontend Injection:** The Vite React application requires the API URL at build-time. The pipeline injects `--build-arg VITE_API_BASE_URL=http://34.237.140.163:30081` during the Docker build process, ensuring the frontend container is permanently "baked" with the correct production gateway address.
+* **Dynamic Frontend Injection:** The Vite React application requires the API URL at build-time. The pipeline injects `--build-arg VITE_API_BASE_URL=http://44.205.8.150:30081` during the Docker build process, ensuring the frontend container is permanently "baked" with the correct production gateway address.
 
 ![GitHub Actions Workflow showing successful build pipeline](screenshots/actions.png)
 
@@ -131,7 +131,7 @@ The infrastructure and application logic are fully operational. All microservice
 
 **Application Verification:**
 The KnowledgeNest application is live and accessible.
-* **URL:** `http://34.237.140.163:30080`
+* **URL:** `http://44.205.8.150:30080`
 
 ![The live KnowledgeNest application UI in the browser](screenshots/app.png)
 
