@@ -132,7 +132,7 @@ The infrastructure and application logic are fully operational. All microservice
 **Application Verification:**
 The KnowledgeNest application is live and accessible.
 * **URL:** `http://44.205.8.150:30080`
-
+![The live KnowledgeNest Landing Page in the browser](screenshots/app1.png)
 ![The live KnowledgeNest application UI in the browser](screenshots/app.png)
 
 ---

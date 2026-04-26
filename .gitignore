@@ -18,3 +18,4 @@ terraform.tfstate.backup
 # Kubernetes & Secrets
 *.pem
 .env.current_ip
+config.bat
