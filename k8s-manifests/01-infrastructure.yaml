@@ -81,3 +81,122 @@ spec:
           image: rabbitmq:3-management-alpine
           ports:
             - containerPort: 5672
+---
+# ==========================================
+# React Frontend (The UI)
+# ==========================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: knowledge-nest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: awaiskhan342/knowledge-nest-frontend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+---
+# ==========================================
+# API Gateway
+# ==========================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway
+  namespace: knowledge-nest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-gateway
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+    spec:
+      containers:
+        - name: api-gateway
+          image: awaiskhan342/knowledge-nest-api-gateway:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+---
+# ==========================================
+# Core Microservices (Auth, Course, Review, Notification)
+# ==========================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-service
+  namespace: knowledge-nest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-service
+  template:
+    metadata:
+      labels:
+        app: auth-service
+    spec:
+      containers:
+        - name: auth-service
+          image: awaiskhan342/knowledge-nest-auth-service:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5001
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: course-service
+  namespace: knowledge-nest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: course-service
+  template:
+    metadata:
+      labels:
+        app: course-service
+    spec:
+      containers:
+        - name: course-service
+          image: awaiskhan342/knowledge-nest-course-service:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5002
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: review-service
+  namespace: knowledge-nest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: review-service
+  template:
+    metadata:
+      labels:
+        app: review-service
+    spec:
+      containers:
+        - name: review-service
+          image: awaiskhan342/knowledge-nest-review-service:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5003
