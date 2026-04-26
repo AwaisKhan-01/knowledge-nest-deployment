@@ -4,10 +4,10 @@ import { toast } from 'react-hot-toast'
 function Navbar() {
   const navigate = useNavigate()
   const token = localStorage.getItem('kn_token')
-  let userEmail = ""
+  let userEmail = ''
   try {
-      userEmail = JSON.parse(localStorage.getItem('kn_user') || '{}')?.email || ""
-  } catch(e) {}
+    userEmail = JSON.parse(localStorage.getItem('kn_user') || '{}')?.email || ''
+  } catch (e) {}
 
   const handleLogout = () => {
     localStorage.removeItem('kn_token')
@@ -17,30 +17,35 @@ function Navbar() {
   }
 
   return (
-    <nav className="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between h-16 items-center">
-        <Link to="/" className="flex items-center text-2xl font-bold tracking-tight text-slate-900 group">
-          <span className="bg-primary-600 text-white rounded bg-indigo-600 p-1 mr-2 text-xl drop-shadow-sm group-hover:bg-indigo-500 transition-colors">🎓</span>
+    <nav className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        <Link to="/" className="group flex items-center gap-3 text-xl font-semibold tracking-tight text-slate-950">
+          <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-slate-950 text-sm font-semibold text-white shadow-sm shadow-slate-950/10 transition group-hover:bg-slate-800">
+            KN
+          </span>
           KnowledgeNest
         </Link>
-        <div className="flex gap-6 items-center flex-row font-medium text-sm text-slate-600">
-          <Link to="/courses" className="hover:text-indigo-600 transition-colors">Browse Courses</Link>
+        <div className="flex items-center gap-6 text-sm font-medium text-slate-600">
+          <Link to="/courses" className="transition-colors hover:text-indigo-600">Browse Courses</Link>
           {token ? (
-            <div className="flex items-center gap-4 ml-2 border-l border-slate-200 pl-4">
-              <span className="text-slate-500 font-normal">
+            <div className="ml-2 flex items-center gap-4 border-l border-slate-200 pl-4">
+              <span className="font-normal text-slate-500">
                 {userEmail}
               </span>
-              <button onClick={handleLogout} className="px-4 py-2 hover:bg-slate-100 border border-slate-200 text-slate-700 rounded-md transition-colors active:scale-95 duration-200 shadow-sm">
+              <button
+                onClick={handleLogout}
+                className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-slate-700 shadow-sm transition hover:bg-slate-50 active:scale-95"
+              >
                 Log out
               </button>
             </div>
           ) : (
-            <div className="flex items-center gap-3 ml-2 border-l border-slate-200 pl-4">
-              <Link to="/login" className="px-4 py-2 hover:text-indigo-600 font-semibold transition-colors">
+            <div className="ml-2 flex items-center gap-3 border-l border-slate-200 pl-4">
+              <Link to="/login" className="px-4 py-2 font-semibold transition-colors hover:text-indigo-600">
                  Log in
               </Link>
               <Link to="/register">
-                <button className="px-4 py-2 bg-indigo-600 text-white rounded-md shadow hover:bg-indigo-500 hover:-translate-y-px transition-all font-semibold active:scale-95 duration-200 shadow-indigo-200">
+                <button className="rounded-xl bg-slate-950 px-4 py-2 font-semibold text-white shadow-sm shadow-slate-950/10 transition hover:-translate-y-px hover:bg-slate-800 active:scale-95">
                   Join for Free
                 </button>
               </Link>

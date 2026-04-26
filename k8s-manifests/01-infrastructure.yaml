@@ -31,9 +31,11 @@ spec:
       labels:
         app: postgres
     spec:
+      enableServiceLinks: false
       containers:
         - name: postgres
           image: postgres:15-alpine
+          imagePullPolicy: Always
           env:
             - name: POSTGRES_USER
               value: "nest_user"
@@ -73,9 +75,11 @@ spec:
       labels:
         app: rabbitmq
     spec:
+      enableServiceLinks: false
       containers:
         - name: rabbitmq
           image: rabbitmq:3-management-alpine
+          imagePullPolicy: Always
           ports:
             - containerPort: 5672
             - containerPort: 15672 # Management UI port

@@ -37,6 +37,14 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 8000
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 8
+            periodSeconds: 5
+            timeoutSeconds: 2
+            failureThreshold: 3
           env:
             - name: AUTH_SERVICE_URL
               value: "http://auth-service:5001"
@@ -80,6 +88,14 @@ spec:
         - name: auth-service
           image: awaiskhan342/knowledge-nest-auth:latest
           imagePullPolicy: Always
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 5001
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 2
+            failureThreshold: 3
           env:
             - name: DATABASE_URL
               value: "postgresql://nest_user:nest_password@postgres:5432/knowledge_nest"
@@ -87,6 +103,10 @@ spec:
               value: "amqp://admin:admin@rabbitmq:5672/"
             - name: RABBITMQ_HOST
               value: "rabbitmq"
+            - name: RABBITMQ_USER
+              value: "admin"
+            - name: RABBITMQ_PASS
+              value: "admin"
 ---
 # Course Service
 apiVersion: v1
@@ -121,11 +141,25 @@ spec:
         - name: course-service
           image: awaiskhan342/knowledge-nest-course:latest
           imagePullPolicy: Always
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 5002
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 2
+            failureThreshold: 3
           env:
             - name: DATABASE_URL
               value: "postgresql://nest_user:nest_password@postgres:5432/knowledge_nest"
+            - name: RABBITMQ_URL
+              value: "amqp://admin:admin@rabbitmq:5672/"
             - name: RABBITMQ_HOST
               value: "rabbitmq"
+            - name: RABBITMQ_USER
+              value: "admin"
+            - name: RABBITMQ_PASS
+              value: "admin"
 
 # ==========================================
 # 3. Asynchronous Worker (Notification Service)
@@ -156,6 +190,10 @@ spec:
               value: "amqp://admin:admin@rabbitmq:5672/"
             - name: RABBITMQ_HOST
               value: "rabbitmq"
+            - name: RABBITMQ_USER
+              value: "admin"
+            - name: RABBITMQ_PASS
+              value: "admin"
 
 # ==========================================
 # 4. React Frontend (User Interface)

@@ -8,6 +8,7 @@ import os
 import logging
 import time
 import functools
+from urllib.parse import urlparse
 from typing import Dict, Any, Optional, Callable, Union, List, Tuple
 
 # Configure logging
@@ -47,8 +48,8 @@ def retry_on_failure(max_retries: int = 3, initial_delay: float = 1.0, max_delay
 class RabbitMQClient:
     """RabbitMQ client with automatic reconnection and retry logic for Notification Service"""
     
-    def __init__(self, host: str = None, port: int = None, username: str = None, password: str = None, 
-                 max_retries: int = 5, initial_backoff: float = 1.0):
+    def __init__(self, url: str = None, host: str = None, port: int = None, username: str = None, password: str = None, 
+                 max_retries: int = 1, initial_backoff: float = 0.0):
         """Initialize RabbitMQ client with connection parameters and retry settings.
         
         Args:
@@ -59,10 +60,12 @@ class RabbitMQClient:
             max_retries: Maximum number of retry attempts
             initial_backoff: Initial delay between retries in seconds
         """
-        self.host = host or os.getenv('RABBITMQ_HOST', 'rabbitmq')
-        self.port = int(port) if port is not None else int(os.getenv('RABBITMQ_PORT', '5672'))
-        self.username = username or os.getenv('RABBITMQ_USER', 'admin')
-        self.password = password or os.getenv('RABBITMQ_PASS', 'password')
+        rabbitmq_url = url or os.getenv('RABBITMQ_URL')
+        parsed_url = urlparse(rabbitmq_url) if rabbitmq_url else None
+        self.host = parsed_url.hostname if parsed_url and parsed_url.hostname else (host or os.getenv('RABBITMQ_HOST', 'rabbitmq'))
+        self.port = int(parsed_url.port) if parsed_url and parsed_url.port else (int(port) if port is not None else int(os.getenv('RABBITMQ_PORT', '5672')))
+        self.username = parsed_url.username if parsed_url and parsed_url.username else (username or os.getenv('RABBITMQ_USER', os.getenv('RABBITMQ_DEFAULT_USER', 'admin')))
+        self.password = parsed_url.password if parsed_url and parsed_url.password else (password or os.getenv('RABBITMQ_PASS', os.getenv('RABBITMQ_DEFAULT_PASS', 'admin')))
         self.max_retries = max_retries
         self.initial_backoff = initial_backoff
         self._connection = None
@@ -88,7 +91,7 @@ class RabbitMQClient:
                 self._channel = self.connection.channel()
         return self._channel
     
-    @retry_on_failure(max_retries=3, initial_delay=1.0)
+    @retry_on_failure(max_retries=1, initial_delay=0.0)
     def connect(self) -> bool:
         """Establish connection to RabbitMQ with retry logic"""
         try:
@@ -98,10 +101,10 @@ class RabbitMQClient:
                 port=self.port,
                 credentials=credentials,
                 heartbeat=600,
-                connection_attempts=3,
-                retry_delay=5,
-                socket_timeout=5,
-                blocked_connection_timeout=300
+                connection_attempts=1,
+                retry_delay=0,
+                socket_timeout=2,
+                blocked_connection_timeout=2
             )
             
             self._connection = pika.BlockingConnection(parameters)
@@ -147,7 +150,7 @@ class RabbitMQClient:
                 return False
         return False
     
-    @retry_on_failure(max_retries=3, initial_delay=0.5)
+    @retry_on_failure(max_retries=1, initial_delay=0.0)
     def declare_exchange(self, exchange_name: str, exchange_type: str = 'topic') -> bool:
         """Declare an exchange with retry logic"""
         if not self.ensure_connection():
@@ -183,7 +186,7 @@ class RabbitMQClient:
             self._channel = None
             raise
     
-    @retry_on_failure(max_retries=3, initial_delay=0.5)
+    @retry_on_failure(max_retries=1, initial_delay=0.0)
     def declare_queue(self, queue_name: str, durable: bool = True, 
                      exclusive: bool = False, auto_delete: bool = False, 
                      arguments: Optional[Dict] = None, exchange: str = None, 
@@ -244,7 +247,7 @@ class RabbitMQClient:
             self._channel = None
             raise
     
-    @retry_on_failure(max_retries=3, initial_delay=0.5)
+    @retry_on_failure(max_retries=1, initial_delay=0.0)
     def bind_queue(self, queue_name: str, exchange: str, routing_key: str) -> bool:
         """Bind a queue to an exchange with a routing key"""
         if not self.ensure_connection():
@@ -463,7 +466,4 @@ class RabbitMQClient:
             self._channel = None
 
 # Global instance with retry configuration
-rabbitmq_client = RabbitMQClient(
-    max_retries=5,
-    initial_backoff=1.0
-)
+rabbitmq_client = RabbitMQClient()

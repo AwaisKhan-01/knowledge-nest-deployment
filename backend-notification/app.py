@@ -41,8 +41,8 @@ class NotificationService:
             'course.*',
             'review.*'
         ]
-        self.max_retries = int(os.getenv('RABBITMQ_MAX_RETRIES', '5'))
-        self.retry_delay = int(os.getenv('RABBITMQ_RETRY_DELAY', '5'))
+        self.max_retries = int(os.getenv('RABBITMQ_MAX_RETRIES', '1'))
+        self.retry_delay = int(os.getenv('RABBITMQ_RETRY_DELAY', '2'))
         self.rabbitmq = None
         self.should_reconnect = True
         
@@ -54,12 +54,7 @@ class NotificationService:
         while retry_count < self.max_retries and self.should_reconnect:
             try:
                 self.rabbitmq = RabbitMQClient(
-                    host=os.getenv('RABBITMQ_HOST', 'rabbitmq'),
-                    port=int(os.getenv('RABBITMQ_PORT', '5672')),
-                    username=os.getenv('RABBITMQ_USER', 'admin'),
-                    password=os.getenv('RABBITMQ_PASS', 'password'),
-                    max_retries=3,
-                    initial_backoff=2.0
+                    url=os.getenv('RABBITMQ_URL', 'amqp://admin:admin@rabbitmq:5672/')
                 )
                 
                 if self.rabbitmq.ensure_connection():
