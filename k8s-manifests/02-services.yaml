@@ -50,6 +50,8 @@ spec:
               value: "http://auth-service:5001"
             - name: COURSE_SERVICE_URL
               value: "http://course-service:5002"
+            - name: REVIEW_SERVICE_URL
+              value: "http://review-service:5003"
 
 # ==========================================
 # 2. Synchronous Backend Services (Auth, Course)
@@ -145,6 +147,59 @@ spec:
             httpGet:
               path: /health
               port: 5002
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 2
+            failureThreshold: 3
+          env:
+            - name: DATABASE_URL
+              value: "postgresql://nest_user:nest_password@postgres:5432/knowledge_nest"
+            - name: RABBITMQ_URL
+              value: "amqp://admin:admin@rabbitmq:5672/"
+            - name: RABBITMQ_HOST
+              value: "rabbitmq"
+            - name: RABBITMQ_USER
+              value: "admin"
+            - name: RABBITMQ_PASS
+              value: "admin"
+---
+# Review Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: review-service
+  namespace: knowledge-nest
+spec:
+  selector:
+    app: review-service
+  ports:
+    - port: 5003
+      targetPort: 5003
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: review-service
+  namespace: knowledge-nest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: review-service
+  template:
+    metadata:
+      labels:
+        app: review-service
+    spec:
+      enableServiceLinks: false
+      containers:
+        - name: review-service
+          image: awaiskhan342/knowledge-nest-review:latest
+          imagePullPolicy: Always
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 5003
             initialDelaySeconds: 10
             periodSeconds: 5
             timeoutSeconds: 2
