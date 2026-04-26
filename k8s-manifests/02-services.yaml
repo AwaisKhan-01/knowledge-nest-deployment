@@ -1,6 +1,4 @@
-# ==========================================
-# 1. API Gateway (The Traffic Cop)
-# ==========================================
+# 1. API Gateway
 apiVersion: v1
 kind: Service
 metadata:
@@ -34,19 +32,15 @@ spec:
         - name: api-gateway
           image: awaiskhan342/knowledge-nest-gateway:latest
           imagePullPolicy: Always
-          ports:
-            - containerPort: 8000
           env:
             - name: AUTH_SERVICE_URL
               value: "http://auth-service:5001"
             - name: COURSE_SERVICE_URL
               value: "http://course-service:5002"
-
-# ==========================================
-# 2. Synchronous Backend Services (Auth, Course)
-# ==========================================
+            - name: REVIEW_SERVICE_URL
+              value: "http://review-service:5003"
 ---
-# Auth Service
+# 2. Auth Service
 apiVersion: v1
 kind: Service
 metadata:
@@ -83,12 +77,8 @@ spec:
               value: "postgresql://nest_user:nest_password@postgres:5432/knowledge_nest"
             - name: RABBITMQ_URL
               value: "amqp://admin:admin@rabbitmq:5672/"
-            - name: RABBITMQ_HOST
-              value: "rabbitmq"
-            - name: RABBITMQ_PORT
-              value: "5672" # Fixed port collision
 ---
-# Course Service
+# 3. Course Service
 apiVersion: v1
 kind: Service
 metadata:
@@ -123,15 +113,44 @@ spec:
           env:
             - name: DATABASE_URL
               value: "postgresql://nest_user:nest_password@postgres:5432/knowledge_nest"
-            - name: RABBITMQ_HOST
-              value: "rabbitmq"
-            - name: RABBITMQ_PORT
-              value: "5672" # Fixed port collision
-
-# ==========================================
-# 3. Asynchronous Worker (Notification Service)
-# ==========================================
 ---
+# 4. Review Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: review-service
+  namespace: knowledge-nest
+spec:
+  selector:
+    app: review-service
+  ports:
+    - port: 5003
+      targetPort: 5003
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: review-service
+  namespace: knowledge-nest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: review-service
+  template:
+    metadata:
+      labels:
+        app: review-service
+    spec:
+      containers:
+        - name: review-service
+          image: awaiskhan342/knowledge-nest-review-service:latest
+          imagePullPolicy: Always
+          env:
+            - name: DATABASE_URL
+              value: "postgresql://nest_user:nest_password@postgres:5432/knowledge_nest"
+---
+# 5. Notification Service
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -154,15 +173,8 @@ spec:
           env:
             - name: RABBITMQ_URL
               value: "amqp://admin:admin@rabbitmq:5672/"
-            - name: RABBITMQ_HOST
-              value: "rabbitmq"
-            - name: RABBITMQ_PORT
-              value: "5672" # Fixed port collision
-
-# ==========================================
-# 4. React Frontend (User Interface)
-# ==========================================
 ---
+# 6. React Frontend
 apiVersion: v1
 kind: Service
 metadata:
@@ -174,7 +186,7 @@ spec:
     app: frontend
   ports:
     - port: 80
-      targetPort: 3000 # Aligned with Vite
+      targetPort: 3000
       nodePort: 30080 
 ---
 apiVersion: apps/v1
@@ -197,4 +209,4 @@ spec:
           image: awaiskhan342/knowledge-nest-frontend:latest
           imagePullPolicy: Always
           ports:
-            - containerPort: 3000 # Aligned with Vite
+            - containerPort: 3000
